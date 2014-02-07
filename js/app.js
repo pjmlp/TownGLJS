@@ -21,7 +21,7 @@ function UTIL_TO_RADIANS(angleDeg) {
     return angleDeg * Math.PI / 180;
 }
 
-function createScene(scene) {
+function createScene(scene, nodesToUpdate) {
     // Floor
     var floor = createFloor();
     
@@ -99,7 +99,7 @@ function createScene(scene) {
     scene.add(tunnel);
     
     // first windmill
-    var windmill = createWindmill();
+    var windmill = createWindmill(nodesToUpdate);
     m = new THREE.Matrix4();
     m.makeTranslation(5, -0.2, 13);
     windmill.applyMatrix(m);
@@ -107,7 +107,7 @@ function createScene(scene) {
     scene.add(windmill);
     
     // second windmill
-    windmill = createWindmill();
+    windmill = createWindmill(nodesToUpdate);
     m = new THREE.Matrix4();
     m.makeTranslation(15, -0.2, -15);
     windmill.applyMatrix(m);
@@ -189,10 +189,11 @@ function createFloor() {
 }
 
 /**
+ * @param {array} nodesToUpdate Contains the sails node, so that it is updatable
  * Creates a windmill 
  * @returns {THREE.Mesh} A mesh representing a windmill
  */
-function createWindmill() {
+function createWindmill(nodesToUpdate) {
     // base
     var group = new THREE.Object3D();
     var geometry = new THREE.CylinderGeometry(1, 1, 1.5);
@@ -219,6 +220,7 @@ function createWindmill() {
     mesh.applyMatrix(transform);
     group.add(mesh);    
     
+    nodesToUpdate.push(mesh);
     return group;
 }
 
@@ -390,7 +392,9 @@ function createSails() {
     var length = 0.75;
     var elems = 12;
     
+    var group = new THREE.Object3D();
     var geometry = new THREE.Geometry();
+    var geometryLines = new THREE.Geometry();
     var maxAngle = 2 * Math.PI;
     var angleSlice = maxAngle / elems;
     for (var base = 0, angle = 0; angle < maxAngle ; angle += angleSlice, base += 3) {
@@ -399,15 +403,25 @@ function createSails() {
         geometry.vertices.push(new THREE.Vector3 (x, y, 0));
         geometry.vertices.push(new THREE.Vector3 (0, 0, 0));
         
+        geometryLines.vertices.push(new THREE.Vector3 (x, y, 0));
+        
         angle += angleSlice;
         x = length * Math.cos(angle);
         y = length * Math.sin(angle);
 
         geometry.vertices.push(new THREE.Vector3 (x, y, 0));
         geometry.faces.push( new THREE.Face3( base, base + 1, base + 2 ) );
+        
+        geometryLines.vertices.push(new THREE.Vector3 (x, y, 0));
     }    
     geometry.computeBoundingSphere();
+    geometryLines.vertices.push(new THREE.Vector3 (length * Math.cos(angle), length * Math.sin(angle), 0));
     
     var material = new THREE.MeshBasicMaterial({color: 0xfff000, side: THREE.DoubleSide});
-    return new THREE.Mesh(geometry, material);;
+    group.add(new THREE.Mesh(geometry, material));
+ 
+    var line = new THREE.Line( geometryLines, new THREE.LineBasicMaterial( { color: 0xfff000, linewidth: 2 } ) );
+    group.add(line);
+    
+    return group;
 }
