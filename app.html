@@ -1,8 +1,22 @@
 <!DOCTYPE html>
 <!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
+app.html-  The TownGL web page
+Copyright (C) 2014 Paulo Pinto
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the
+Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.
 -->
 <html>
     <head>
@@ -36,19 +50,17 @@ and open the template in the editor.
                 camera.position.x = 5;
                 camera.position.z = 20;
                 
-                var ambientLight = new THREE.AmbientLight( Math.random() * 0x202020 );
+                var ambientLight = new THREE.AmbientLight( 0x454545 );
 				scene.add( ambientLight );
 
-				var directionalLight = new THREE.DirectionalLight( Math.random() * 0xffffff );
-				directionalLight.position.x = Math.random() - 0.5;
-				directionalLight.position.y = Math.random() - 0.5;
-				directionalLight.position.z = Math.random() - 0.5;
+				var directionalLight = new THREE.DirectionalLight( 0x3244521 );
+				directionalLight.position.x = 0.73;
+				directionalLight.position.y = -0.079;
+				directionalLight.position.z = -0.678;
 				directionalLight.position.normalize();
+                console.log(directionalLight.position.x + ", " + directionalLight.position.y + ", " + directionalLight.position.z);
 				scene.add( directionalLight );
 
-				pointLight = new THREE.PointLight( 0xff0000, 1 );
-				scene.add( pointLight );
-                
                 createScene(scene, nodesToUpdate);
                 
                 controls = new THREE.TrackballControls( camera );
@@ -71,24 +83,16 @@ and open the template in the editor.
 			}
 
 			function onWindowResize() {
-
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
 
 				renderer.setSize( window.innerWidth, window.innerHeight );
-                
                 controls.handleResize();
-
 			}
 
 			function animate() {
-				//mesh.rotation.x += 0.005;
-				//mesh.rotation.y += 0.01;
-                //updateCamera(clock.getDelta());
-                //controls.update( clock.getDelta() );
                 var delta = clock.getDelta();
                 nodesToUpdate.forEach(function(element, index, array) {
-                    //console.log("element:", element);
                     element.rotation.z += delta;
                 });
                 controls.update();
@@ -103,31 +107,7 @@ and open the template in the editor.
 				renderer.render( scene, camera );
 
 			}
-            
-            var angle = 0;
-            
-            
-            function updateCamera(currentFrame) {
-              angle += 10 * currentFrame;
-              if (angle > 360)
-                angle -=360;
 
-              var cosAngle = Math.cos (UTIL_TO_RADIANS (angle));
-              var sinAngle = Math.sin (UTIL_TO_RADIANS (angle));
-  
-              var altitude = 0.5;
-              var RADIUS = 9.5;
-              var xEye = RADIUS * cosAngle;
-                var yEye = altitude;
-                var zEye = RADIUS * sinAngle;
-
-                var xTarget = xEye + Math.cos (UTIL_TO_RADIANS (98 + angle));
-                var yTarget = altitude;
-                var zTarget = zEye + Math.sin (UTIL_TO_RADIANS (98 + angle));
-                
-                camera.lookAt (xTarget, yTarget, zTarget);
-                camera.updateProjectionMatrix();
-            }
         </script>
 
     </body>

@@ -17,7 +17,7 @@
 * Boston, MA 02111-1307, USA.
 */
 
-function UTIL_TO_RADIANS(angleDeg) {
+function toRadians(angleDeg) {
     return angleDeg * Math.PI / 180;
 }
 
@@ -38,7 +38,7 @@ function createScene(scene, nodesToUpdate) {
     m.makeTranslation(0, -0.9, 0);
     
     var rt = new THREE.Matrix4();
-    rt.makeRotationX(UTIL_TO_RADIANS(90));
+    rt.makeRotationX(toRadians(90));
     
     m.multiply(rt);
     road.applyMatrix(m);    
@@ -74,7 +74,7 @@ function createScene(scene, nodesToUpdate) {
     m.scale(new THREE.Vector3(0.5, 2, 0.5));
     
     var r = new THREE.Matrix4();
-    r.makeRotationY(UTIL_TO_RADIANS(60));
+    r.makeRotationY(toRadians(60));
     
     m.multiply(r);
     tunnel.applyMatrix(m);
@@ -91,7 +91,7 @@ function createScene(scene, nodesToUpdate) {
     m.scale(new THREE.Vector3(1, 0.5, 0.5));
     
     var r = new THREE.Matrix4();
-    r.makeRotationY(UTIL_TO_RADIANS(90));
+    r.makeRotationY(toRadians(90));
     
     m.multiply(r);
     tunnel.applyMatrix(m);
@@ -123,9 +123,9 @@ function createScene(scene, nodesToUpdate) {
  * @param {THREE.Matrix4} Local matrix to apply to the building
  * @returns {THREE.Mesh} A building mesh with the given color and orientation
  */
-function createBuilding(color, m) {
+function createBuilding(meshColor, m) {
     var geometry = new THREE.CubeGeometry(2, 8, 2);
-    var material = new THREE.MeshBasicMaterial({color: color});
+    var material = new THREE.MeshPhongMaterial({emissive: meshColor});
     var cube = new THREE.Mesh(geometry, material);
     cube.applyMatrix(m);
     
@@ -141,7 +141,7 @@ function createTunnel() {
     // left side
     var group = new THREE.Object3D();
     var geometry = new THREE.CubeGeometry(1.0, 1.0, 5.0);
-    var material = new THREE.MeshBasicMaterial({color: 0xfff000});
+    var material = new THREE.MeshPhongMaterial({emissive: 0xfff000});
     var mesh = new THREE.Mesh(geometry, material);
     
     var transform = new THREE.Matrix4();
@@ -177,7 +177,7 @@ function createTunnel() {
  */
 function createFloor() {
     var geometry = new THREE.PlaneGeometry(100, 100, 0);
-    var material = new THREE.MeshBasicMaterial({color: 0x334D7F, side: THREE.DoubleSide});
+    var material = new THREE.MeshPhongMaterial({emissive: 0x334D7F, side: THREE.DoubleSide});
     var mesh = new THREE.Mesh(geometry, material);
     
     var transform = new THREE.Matrix4();
@@ -197,14 +197,14 @@ function createWindmill(nodesToUpdate) {
     // base
     var group = new THREE.Object3D();
     var geometry = new THREE.CylinderGeometry(1, 1, 1.5);
-    var material = new THREE.MeshBasicMaterial({color: 0x088A08});
+    var material = new THREE.MeshPhongMaterial({emissive: 0x088A08});
     var mesh = new THREE.Mesh(geometry, material);
     
     group.add(mesh);
 
     // roof
     geometry = new THREE.CylinderGeometry(0, 1.0, 0.5);
-    material = new THREE.MeshBasicMaterial({color: 0xff0000});
+    material = new THREE.MeshPhongMaterial({emissive: 0xff0000});
     mesh = new THREE.Mesh(geometry, material);
     
     var transform = new THREE.Matrix4();
@@ -254,7 +254,7 @@ function createDisk (innerRadius, outerRadius, slices) {
     }
     geometry.computeBoundingSphere();
     
-    var material = new THREE.MeshBasicMaterial({color: 0x000000, side: THREE.DoubleSide});
+    var material = new THREE.MeshPhongMaterial({emissive: 0x000000, side: THREE.DoubleSide});
 
     
     return new THREE.Mesh(geometry, material);;
@@ -278,7 +278,7 @@ function createArcTunnel () {
     
     // left base
     var geometry = new THREE.CubeGeometry(1.0, 1.0, 5.0);
-    var material = new THREE.MeshBasicMaterial({color: 0xfff000});
+    var material = new THREE.MeshPhongMaterial({emissive: 0xfff000});
     var mesh = new THREE.Mesh(geometry, material);
     
     var transform = new THREE.Matrix4();
@@ -316,7 +316,7 @@ function createArc (depth) {
     var geometry = new THREE.Geometry();
 
     for (var i = 0; i < elems; i++) {
-        var angle = UTIL_TO_RADIANS(10.0 * (i + 1));
+        var angle = toRadians(10.0 * (i + 1));
        
         geometry.vertices.push(new THREE.Vector3 (lastXBottom, lastYBottom, depth));
         geometry.vertices.push(new THREE.Vector3 (lastXTop, lastYTop, depth));
@@ -343,7 +343,7 @@ function createArc (depth) {
     }
     geometry.computeBoundingSphere();
     
-    var material = new THREE.MeshBasicMaterial({color: 0xfff000, side: THREE.DoubleSide});
+    var material = new THREE.MeshPhongMaterial({emissive: 0xfff000, side: THREE.DoubleSide});
     return new THREE.Mesh(geometry, material);;
 }
 
@@ -359,7 +359,7 @@ function createRoof() {
     var geometry = new THREE.Geometry();
 
     for (var i = 0; i < elems; i++) {
-        var angle = UTIL_TO_RADIANS(10.0 * (i + 1));
+        var angle = toRadians(10.0 * (i + 1));
        
         geometry.vertices.push(new THREE.Vector3 (lastX, lastY, 2.5));
         geometry.vertices.push(new THREE.Vector3 (lastX, lastY, -2.5));
@@ -379,7 +379,7 @@ function createRoof() {
     }
     geometry.computeBoundingSphere();
     
-    var material = new THREE.MeshBasicMaterial({color: 0xfff000, side: THREE.DoubleSide});
+    var material = new THREE.MeshPhongMaterial({emissive: 0xfff000, side: THREE.DoubleSide});
     return new THREE.Mesh(geometry, material);;
 }
 
@@ -417,7 +417,7 @@ function createSails() {
     geometry.computeBoundingSphere();
     geometryLines.vertices.push(new THREE.Vector3 (length * Math.cos(angle), length * Math.sin(angle), 0));
     
-    var material = new THREE.MeshBasicMaterial({color: 0xfff000, side: THREE.DoubleSide});
+    var material = new THREE.MeshPhongMaterial({emissive: 0xfff000, side: THREE.DoubleSide});
     group.add(new THREE.Mesh(geometry, material));
  
     var line = new THREE.Line( geometryLines, new THREE.LineBasicMaterial( { color: 0xfff000, linewidth: 2 } ) );
